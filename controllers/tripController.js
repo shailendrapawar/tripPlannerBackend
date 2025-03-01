@@ -56,7 +56,6 @@ class TripController {
 
 
 
-
     static getTrip = async (req, res) => {
 
         try {
@@ -84,23 +83,94 @@ class TripController {
                 data: []
             })
         }
-        // res.send("get trip working")
     }
 
 
     //========for acccepting an rejecting user=============
     static approveUser = async (req, res) => {
-        res.send("aprove trip working")
+
+        try {
+            const { requestUserId } = req.params;
+            const { tripId, userName } = req.body;
+
+            const isApproved = await TripModel.findByIdAndUpdate(tripId, {
+                $push: {
+                    approvedUser: requestUserId
+                },
+                $pull: {
+                    requestedUsers: requestUserId
+                }
+            }, { new: true, upsert: true })
+
+            if (isApproved) {
+                const notifyMsg = `${userName} approved your request`
+                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg);
+
+                const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
+                    $push: {
+                        notifications: newNotification
+                    }
+                })
+
+                if (isNotified) {
+                    res.status(200).json({
+                        msg: " user is approved and notified",
+                        success: true
+                    })
+                }
+            }
+
+        } catch (err) {
+            res.status(400).json({
+                msg: " internal server erorr",
+                success: false
+            })
+        }
     }
+
+
+
+
     static rejectUser = async (req, res) => {
-        res.send("reject trip working")
+
+        try {
+            const { tripId } = req.params;
+            const { requestUserId,userName } = req.body;
+
+            const isRejected = await TripModel.findByIdAndUpdate(tripId, {
+                $pull: {
+                    requestedUsers:  requestUserId
+                }
+            })
+
+            if (isRejected) {
+                const notifyMsg = `${userName} rejected your request `
+                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg);
+
+                const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
+                    $push: {
+                        notifications: newNotification
+                    }
+                })
+
+                if (isNotified) {
+                    return res.status(200).json({
+                        msg: "user rejected and notified",
+                        success: true
+                    })
+                }
+            }
+
+        } catch (err) {
+            console.log(err)
+        }
+
     }
 
 
 
     // =====requesting for joining the trip================
     static requestForTrip = async (req, res) => {
-
         try {
             const { tripId } = req.params
             const { userName } = req.params
@@ -143,6 +213,7 @@ class TripController {
             })
         }
     }
+
 
 }
 

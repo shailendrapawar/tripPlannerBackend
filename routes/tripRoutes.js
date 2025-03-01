@@ -10,8 +10,8 @@ tripRouter.post("/createTrip",authMiddleware,TripController.createTrip)
 tripRouter.post("/deleteTrip/:tripId",authMiddleware,TripController.deleteTrip)
 tripRouter.get("/getTrip/:tripId",authMiddleware,TripController.getTrip)
 
-tripRouter.post("/approveUser",authMiddleware,TripController.approveUser)
-tripRouter.post("/rejectUser",authMiddleware,TripController.rejectUser)
+tripRouter.post("/approveUser/:requestUserId",authMiddleware,TripController.approveUser)
+tripRouter.post("/rejectUser/:tripId",authMiddleware,TripController.rejectUser)
 
 //========normal user actions=====================
 tripRouter.post("/requestForTrip/:tripId/:userName",authMiddleware,TripController.requestForTrip)
