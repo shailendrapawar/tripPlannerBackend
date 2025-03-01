@@ -21,10 +21,10 @@ const tripSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    coords:[{
-        type:Number,
-        required:true
-    }],
+    coords:{
+        lat:Number,
+        long:Number
+    },
     budget:{
         type:String,
         default:""
@@ -34,15 +34,19 @@ const tripSchema=new mongoose.Schema({
         activity:String
     }],
 
+    
     requestedUsers:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     }],
-
     approvedUser:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
-    }]
+    }],
+    status:{
+        type:Boolean,
+        default:true
+    }
 },{
     timestamps:true
 })

@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 
 //=======importing routes=================================
 import authRouter from "./routes/authRoutes.js";
+import tripRouter from "./routes/tripRoutes.js";
 
 
 
@@ -27,6 +28,7 @@ app.use(cookieParser())
 
 
 app.use("/auth",authRouter)
+app.use("/trip",tripRouter)
 
 app.get("/",(req,res)=>{
     res.send("wokring server")
