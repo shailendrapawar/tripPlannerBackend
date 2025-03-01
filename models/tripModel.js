@@ -13,10 +13,10 @@ const tripSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    duration:[{
-        type:Date,
-        required:true
-    }],
+    duration:{
+        start:Date,
+        end:Date
+    },
     destination:{
         type:String,
         required:true
@@ -26,8 +26,8 @@ const tripSchema=new mongoose.Schema({
         long:Number
     },
     budget:{
-        type:String,
-        default:""
+        type:Number,
+        default:0
     },
     itinerary:[{
         day:Number,
@@ -37,11 +37,13 @@ const tripSchema=new mongoose.Schema({
     
     requestedUsers:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User", 
+        default:[]
     }],
     approvedUser:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        default:[]
     }],
     status:{
         type:Boolean,
@@ -52,3 +54,4 @@ const tripSchema=new mongoose.Schema({
 })
 
 const TripModel=mongoose.model("Trip",tripSchema)
+export default TripModel

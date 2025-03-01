@@ -6,11 +6,11 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 const tripRouter=express.Router();
 
 tripRouter.post("/createTrip",authMiddleware,TripController.createTrip)
-tripRouter.post("/deleteTrip",TripController.deleteTrip)
-tripRouter.get("/getTrip",TripController.getTrip)
+tripRouter.post("/deleteTrip",authMiddleware,TripController.deleteTrip)
+tripRouter.get("/getTrip",authMiddleware,TripController.getTrip)
 
-tripRouter.post("/approveUser",TripController.approveUser)
-tripRouter.post("/rejectUser",TripController.rejectUser)
+tripRouter.post("/approveUser",authMiddleware,TripController.approveUser)
+tripRouter.post("/rejectUser",authMiddleware,TripController.rejectUser)
 
 
 export default tripRouter
