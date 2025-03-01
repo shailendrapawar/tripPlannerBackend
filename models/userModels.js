@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-
+import notificationSchema from "./notificationModel.js";
 const userSchema= new mongoose.Schema({
     name:{
         type:String,
@@ -31,10 +31,14 @@ const userSchema= new mongoose.Schema({
         type:String,
         enum:['user','admin'],
         default:'user'
-    }
+    },
+    notifications:[{
+        type:notificationSchema,
+        default:[]
+    }]
 },{
     timestamps:true
 })
 
-const userModel=mongoose.model("User",userSchema);
-export default userModel
+const UserModel=mongoose.model("User",userSchema);
+export default UserModel

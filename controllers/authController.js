@@ -39,8 +39,8 @@ class AuthController {
         } catch (err) {
             console.log(err)
             return res.status(400).json({
-                msg: "User created",
-                success: true
+                msg: "internal server error",
+                success: false
             })
         }
     }
@@ -95,10 +95,11 @@ class AuthController {
         }
     }
 
-    //========for logout============
+    
+    //========for logout============-=======
     static logout=async(req,res)=>{
         res.clearCookie("token");
-        
+
         return res.status(200).json({
             msg:"user logged out",
             success:true
