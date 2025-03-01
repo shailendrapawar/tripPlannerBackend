@@ -14,7 +14,7 @@ tripRouter.post("/approveUser",authMiddleware,TripController.approveUser)
 tripRouter.post("/rejectUser",authMiddleware,TripController.rejectUser)
 
 //========normal user actions=====================
-tripRouter.post("/requestForTrip/:tripId",authMiddleware,TripController.requestForTrip)
+tripRouter.post("/requestForTrip/:tripId/:userName",authMiddleware,TripController.requestForTrip)
 
 
 export default tripRouter

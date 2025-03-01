@@ -21,3 +21,11 @@ const notificationSchema=new mongoose.Schema({
 
 //=======just exportung schema==========
 export default notificationSchema;
+
+export const notificationFunction=(senderId,receiverId,message)=>{
+    return {
+        senderId:senderId,
+        receiverId:receiverId,
+        message:message
+    }
+}

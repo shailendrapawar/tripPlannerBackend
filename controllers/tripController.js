@@ -1,4 +1,6 @@
 import TripModel from "../models/tripModel.js"
+import { notificationFunction } from "../models/notificationModel.js"
+import UserModel from "../models/userModels.js"
 class TripController {
     static createTrip = async (req, res) => {
         try {
@@ -95,12 +97,15 @@ class TripController {
     }
 
 
+
+    // =====requesting for joining the trip================
     static requestForTrip = async (req, res) => {
 
         try {
             const { tripId } = req.params
+            const { userName } = req.params
             const userId = req.id
-            console.log(tripId);
+            // console.log(tripId);
 
             const isRequested = await TripModel.findByIdAndUpdate(tripId, {
                 $push: { requestedUsers: userId }
@@ -109,11 +114,24 @@ class TripController {
             )
 
             if (isRequested) {
-                return res.status(200).json({
-                    msg: "requested for trip",
-                    success: true,
-                    data: isRequested
+
+                const notifyMsg = `${userName} requested for joining trip`
+                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg);
+                console.log(newNotification)
+
+                const isNotified = await UserModel.findByIdAndUpdate(isRequested.host, {
+                    $push: {
+                        notifications: newNotification
+                    }
                 })
+
+                if (isNotified) {
+                    return res.status(200).json({
+                        msg: "requested for trip",
+                        success: true,
+                        data: isRequested
+                    })
+                }
             }
 
         } catch (err) {
@@ -121,7 +139,7 @@ class TripController {
             return res.status(400).json({
                 msg: "internal server error",
                 success: false,
-                data:[]
+                data: []
             })
         }
     }
