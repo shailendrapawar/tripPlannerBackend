@@ -60,16 +60,16 @@ class TripController {
         try {
             const { tripId } = req.params;
             console.log(tripId)
-            const isTrip = await TripModel.findById({ _id:tripId }).populate({
-                path:"host",
-                select:"name email gender"
+            const isTrip = await TripModel.findById({ _id: tripId }).populate({
+                path: "host",
+                select: "name email gender"
             })
 
             console.log(isTrip)
 
             if (isTrip) {
                 return res.status(200).json({
-                    msg:"trip found",
+                    msg: "trip found",
                     success: true,
                     data: isTrip
                 })
@@ -92,6 +92,38 @@ class TripController {
     }
     static rejectUser = async (req, res) => {
         res.send("reject trip working")
+    }
+
+
+    static requestForTrip = async (req, res) => {
+
+        try {
+            const { tripId } = req.params
+            const userId = req.id
+            console.log(tripId);
+
+            const isRequested = await TripModel.findByIdAndUpdate(tripId, {
+                $push: { requestedUsers: userId }
+            },
+                { new: true, upsert: false }
+            )
+
+            if (isRequested) {
+                return res.status(200).json({
+                    msg: "requested for trip",
+                    success: true,
+                    data: isRequested
+                })
+            }
+
+        } catch (err) {
+            console.log(err)
+            return res.status(400).json({
+                msg: "internal server error",
+                success: false,
+                data:[]
+            })
+        }
     }
 
 }
