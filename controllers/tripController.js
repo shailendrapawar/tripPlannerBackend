@@ -30,38 +30,59 @@ class TripController {
     }
 
 
+
     //=====================================================
     static deleteTrip = async (req, res) => {
-
         try {
             console.log(req.params)
-            const tripId = req.params.tripId;
+            const { tripId } = req.params;
 
             const isDeleted = await TripModel.findByIdAndDelete({ _id: tripId });
 
             if (isDeleted) {
-              return  res.status(200).json({
+                return res.status(200).json({
                     msg: "Trip deleted successfully"
                 })
             }
 
         } catch (err) {
             res.status(400).json({
-                msg:"Trip not deleted"
+                msg: "Trip not deleted"
             })
         }
-
     }
 
 
 
 
-
-
-
-
     static getTrip = async (req, res) => {
-        res.send("get trip working")
+
+        try {
+            const { tripId } = req.params;
+            console.log(tripId)
+            const isTrip = await TripModel.findById({ _id:tripId }).populate({
+                path:"host",
+                select:"name email gender"
+            })
+
+            console.log(isTrip)
+
+            if (isTrip) {
+                return res.status(200).json({
+                    msg:"trip found",
+                    success: true,
+                    data: isTrip
+                })
+            }
+
+        } catch (err) {
+            return res.status(400).json({
+                msg: " trip not found",
+                success: false,
+                data: []
+            })
+        }
+        // res.send("get trip working")
     }
 
 
