@@ -5,6 +5,7 @@ configDotenv()
 import cors from "cors"
 import connectDb from "./configs/dbConnect.js";
 connectDb()
+import cookieParser from "cookie-parser";
 
 
 
@@ -21,7 +22,7 @@ app.use(cors({
     credentials:true,
 }))
 app.use(express.json())
-
+app.use(cookieParser())
 
 
 
