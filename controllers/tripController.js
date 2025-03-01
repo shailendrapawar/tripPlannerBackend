@@ -14,26 +14,52 @@ class TripController {
                 itinerary,
             })
             const isCreated = await newTrip.save();
-            if(isCreated){
+            if (isCreated) {
                 return res.status(201).json({
-                    msg:"Trip created",
-                    success:true
+                    msg: "Trip created",
+                    success: true
+                })
+            }
+        } catch (err) {
+            console.log(err)
+            return res.status(400).json({
+                msg: "Trip not created",
+                success: false
+            })
+        }
+    }
+
+
+    //=====================================================
+    static deleteTrip = async (req, res) => {
+
+        try {
+            console.log(req.params)
+            const tripId = req.params.tripId;
+
+            const isDeleted = await TripModel.findByIdAndDelete({ _id: tripId });
+
+            if (isDeleted) {
+              return  res.status(200).json({
+                    msg: "Trip deleted successfully"
                 })
             }
 
         } catch (err) {
-            console.log(err)
-            return res.status(400).json({
-                msg:"Trip not created",
-                success:false
+            res.status(400).json({
+                msg:"Trip not deleted"
             })
-
         }
+
     }
 
-    static deleteTrip = async (req, res) => {
-        res.send("delete trip working")
-    }
+
+
+
+
+
+
+
     static getTrip = async (req, res) => {
         res.send("get trip working")
     }
