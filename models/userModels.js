@@ -24,7 +24,7 @@ const userSchema= new mongoose.Schema({
         required:true,
     },
     dob:{
-        tyep:Date,
+        type:Date,
         required:true,
     },
     avatar:{

@@ -83,7 +83,8 @@ class AuthController {
                 maxAge: 7 * 24 * 60 * 60 * 1000
             }).json({
                 msg: "login successfull",
-                success: true
+                success: true,
+                user:isExist
             })
 
         } catch (err) {
