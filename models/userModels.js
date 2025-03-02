@@ -20,7 +20,11 @@ const userSchema= new mongoose.Schema({
     },
     gender:{
         type:String,
-        enum:['male','female','others'],
+        enum:['male','female','other'],
+        required:true,
+    },
+    dob:{
+        tyep:Date,
         required:true,
     },
     avatar:{

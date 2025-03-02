@@ -8,7 +8,7 @@ class AuthController {
 
     static register = async (req, res) => {
         try {
-            const { name, email, password, gender } = req.body
+            const { name, email, password, gender,dob } = req.body
             const isExist = await UserModel.findOne({ email: email })
             if (isExist) {
                 return res.status(404).json({
@@ -25,7 +25,8 @@ class AuthController {
                 name,
                 email,
                 password: hashPass,
-                gender
+                gender,
+                dob
             })
 
             const isCreated = await newUser.save()
