@@ -14,6 +14,10 @@ const userSchema= new mongoose.Schema({
         type:String,
         required:true,
     },
+    bio:{
+        type:String,
+        default:"Heyy there Pal, lets have an adventure"
+    },
     gender:{
         type:String,
         enum:['male','female','others'],
