@@ -61,8 +61,6 @@ class AuthController {
             }
             const isValidPAss = await bcrypt.compareSync(password, isExist.password);
 
-            console.log(isValidPAss)
-
             if (!isValidPAss) {
                 return res.status(401).json({
                     msg: "invalid credentials",
