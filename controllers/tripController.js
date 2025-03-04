@@ -7,7 +7,7 @@ class TripController {
     //========== create a new trip ===================
     static createTrip = async (req, res) => {
         try {
-            const { title, description, startDate, endDate, destination, budget, itinerary } = req.body
+            const { title, description, startDate, endDate, destination, budget, activities,category } = req.body
 
             const newTrip = new TripModel({
                 host: req.id,
@@ -16,7 +16,9 @@ class TripController {
                 duration: { start: startDate, end: endDate },
                 destination,
                 budget,
-                itinerary,
+                activities,
+                category,
+                
             })
             const isCreated = await newTrip.save();
             if (isCreated) {
@@ -97,7 +99,6 @@ class TripController {
             const { userName } = req.params
             const userId = req.id
             // console.log(tripId);
-
             const isRequested = await TripModel.findByIdAndUpdate(tripId, {
                 $push: { requestedUsers: userId }
             },
@@ -107,7 +108,7 @@ class TripController {
             if (isRequested) {
 
                 const notifyMsg = `${userName} requested for joining trip`
-                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg);
+                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg,"join_request");
                 console.log(newNotification)
 
                 const isNotified = await UserModel.findByIdAndUpdate(isRequested.host, {
@@ -135,6 +136,8 @@ class TripController {
         }
     }
 
+    
+
       //======== acccepting a user request=============
       static approveUser = async (req, res) => {
 
@@ -153,7 +156,7 @@ class TripController {
 
             if (isApproved) {
                 const notifyMsg = `${userName} approved your request`
-                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg);
+                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg,"approve_request");
 
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {
@@ -195,7 +198,7 @@ class TripController {
 
             if (isRejected) {
                 const notifyMsg = `${userName} rejected your request `
-                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg);
+                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg,"general");
 
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {

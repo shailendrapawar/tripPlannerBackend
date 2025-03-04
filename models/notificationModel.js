@@ -16,16 +16,21 @@ const notificationSchema=new mongoose.Schema({
     read:{
         type:Boolean,
         default:false
+    },
+    type:{
+        type:String,
+        enum:["join_request","approve_request","general"]
     }
 })
 
 //=======just exportung schema==========
 export default notificationSchema;
 
-export const notificationFunction=(senderId,receiverId,message)=>{
+export const notificationFunction=(senderId,receiverId,message,type)=>{
     return {
         senderId:senderId,
         receiverId:receiverId,
-        message:message
+        message:message,
+        type:type
     }
 }

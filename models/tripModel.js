@@ -13,6 +13,9 @@ const tripSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    category:{
+        type:String
+    },
     duration:{
         start:Date,
         end:Date
@@ -29,11 +32,10 @@ const tripSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
-    itinerary:[{
+    activities:[{
         day:Number,
         activity:String
     }],
-
     
     requestedUsers:[{
         type:mongoose.Schema.Types.ObjectId,
