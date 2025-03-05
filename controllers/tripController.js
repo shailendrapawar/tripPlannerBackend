@@ -9,12 +9,14 @@ class TripController {
         try {
             const { title, description, startDate, endDate, destination, budget, activities,category } = req.body
 
+            console.log(req.body)
+            
             const newTrip = new TripModel({
                 host: req.id,
                 title,
                 description,
                 duration: { start: startDate, end: endDate },
-                destination,
+                destination:destination,
                 budget,
                 activities,
                 category,

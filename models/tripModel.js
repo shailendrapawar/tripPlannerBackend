@@ -21,8 +21,9 @@ const tripSchema=new mongoose.Schema({
         end:Date
     },
     destination:{
-        type:String,
-        required:true
+        destination:String,
+        longitude:Number,
+        latitude:Number
     },
     coords:{
         lat:Number,

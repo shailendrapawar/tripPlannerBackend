@@ -77,13 +77,15 @@ class AuthController {
 
             res.status(200).cookie("token", token, {
                 httpOnly: true,
-                sameSite: "none",
+                sameSite:"none",
                 maxAge: 7 * 24 * 60 * 60 * 1000
             }).json({
                 msg: "login successfull",
                 success: true,
-                user:isExist
+                user:isExist,
+                token:token
             })
+          
 
         } catch (err) {
             console.log(err)

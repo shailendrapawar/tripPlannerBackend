@@ -18,9 +18,10 @@ import tripRouter from "./routes/tripRoutes.js";
 
 
 //=========root middlewares========================
+
 app.use(cors({
-    origin:["http://localhost:5173"],
-    credentials:true,
+    origin:"http://localhost:5173",
+    credentials:true
 }))
 app.use(express.json())
 app.use(cookieParser())
