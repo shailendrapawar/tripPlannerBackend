@@ -8,7 +8,7 @@ class AuthController {
 
     static register = async (req, res) => {
         try {
-            const { name, email, password, gender,dob } = req.body
+            const { name, email, password, gender, dob } = req.body
             const isExist = await UserModel.findOne({ email: email })
             if (isExist) {
                 return res.status(404).json({
@@ -77,35 +77,57 @@ class AuthController {
 
             res.status(200).cookie("token", token, {
                 httpOnly: true,
-                sameSite:"none",
+                sameSite: "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000
             }).json({
                 msg: "login successfull",
                 success: true,
-                user:isExist,
-                token:token
+                user: isExist,
+                token: token
             })
-          
+
 
         } catch (err) {
             console.log(err)
             return res.status(400).json({
-                msg:"internal server error-login",
-                success:false
+                msg: "internal server error-login",
+                success: false
 
             })
         }
     }
 
-    
+
     //========for logout============-=======
-    static logout=async(req,res)=>{
+    static logout = async (req, res) => {
         res.clearCookie("token");
 
         return res.status(200).json({
-            msg:"user logged out",
-            success:true
+            msg: "user logged out",
+            success: true
         })
+
+    }
+
+    static getUserPublicProfile = async (req, res) => {
+        try {
+            const { userId } = req.params;
+            console.log(userId)
+            const user = await UserModel.findById(userId).select("-password -isVerified -role -notifications")
+
+            if (user) {
+                return res.status(200).json({
+                    msg: "user found",
+                    userData: user
+                })
+            }
+
+        } catch (err) {
+            return res.status(400).json({
+                msg: "user not found",
+                userData:[]
+            })
+        }
 
     }
 

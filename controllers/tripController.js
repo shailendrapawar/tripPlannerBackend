@@ -123,7 +123,6 @@ class TripController {
             const hostId = req.id;
             const trips = await TripModel.find({ host: hostId });
             // console.log(trips)
-
             if(trips){
                return res.status(200).json({
                     mgs:"user hosted trips found",
@@ -269,6 +268,38 @@ class TripController {
 
         } catch (err) {
             console.log(err)
+        }
+
+    }
+
+    static userRelatedTrips=async(req,res)=>{
+        
+
+        try {
+            // const hostId = req.id;
+            const {userId}=req.params;
+            const trips = await TripModel.find({ host: userId }).populate(
+                {
+                    path:"host",
+                    select:"name _id avatar",
+                }
+            );
+            // console.log(trips)
+            if(trips){
+               return res.status(200).json({
+                    mgs:"user hosted trips found",
+                    success:true,
+                    trips:trips
+                })
+            }
+
+        } catch (err) {
+            console.log(err)
+            return res.status(400).json({
+                mgs:"internal server error",
+                success:false,
+                trips:[]
+            })
         }
 
     }
