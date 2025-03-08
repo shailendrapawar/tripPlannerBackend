@@ -7,20 +7,19 @@ class TripController {
     //========== create a new trip ===================
     static createTrip = async (req, res) => {
         try {
-            const { title, description, startDate, endDate, destination, budget, activities,category } = req.body
-
-            console.log(req.body)
             
+            const { title, description, startDate, endDate, destination, budget, activities, category } = req.body
+
             const newTrip = new TripModel({
                 host: req.id,
                 title,
                 description,
                 duration: { start: startDate, end: endDate },
-                destination:destination,
+                destination: destination,
                 budget,
                 activities,
                 category,
-                
+
             })
             const isCreated = await newTrip.save();
             if (isCreated) {
@@ -62,7 +61,7 @@ class TripController {
 
 
 
-//========= for getting a single trip==============================
+    //========= for getting a single trip==============================
     static getTrip = async (req, res) => {
 
         try {
@@ -72,8 +71,6 @@ class TripController {
                 path: "host",
                 select: "name email gender"
             })
-
-            // console.log(isTrip)
 
             if (isTrip) {
                 return res.status(200).json({
@@ -90,6 +87,60 @@ class TripController {
                 data: []
             })
         }
+    }
+
+    //==========get all trips==========================
+
+    static getAllTrips=async(req,res)=>{
+        try{
+            const trips=await TripModel.find({}).populate(
+                {
+                    path:"host",
+                    select:"name _id avatar",
+                }
+            )
+        if(trips){
+            return res.status(200).json({
+                msg:" trips found",
+                data:trips
+            })
+        }
+
+        }catch(err){
+            console.log(err)
+            return res.status(400).json({
+                msg:" errro in trip find",
+                data:[]
+            })
+        }
+    }
+
+
+    // ======== get user hosted trips================== 
+    static getUserHostedTrips = async (req, res) => {
+
+        try {
+            const hostId = req.id;
+            const trips = await TripModel.find({ host: hostId });
+            // console.log(trips)
+
+            if(trips){
+               return res.status(200).json({
+                    mgs:"user hosted trips found",
+                    success:true,
+                    trips:trips
+                })
+            }
+
+        } catch (err) {
+            console.log(err)
+            return res.status(400).json({
+                mgs:"internal server error",
+                success:false,
+                trips:[]
+            })
+        }
+
     }
 
 
@@ -110,7 +161,7 @@ class TripController {
             if (isRequested) {
 
                 const notifyMsg = `${userName} requested for joining trip`
-                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg,"join_request");
+                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg, "join_request");
                 console.log(newNotification)
 
                 const isNotified = await UserModel.findByIdAndUpdate(isRequested.host, {
@@ -138,10 +189,10 @@ class TripController {
         }
     }
 
-    
 
-      //======== acccepting a user request=============
-      static approveUser = async (req, res) => {
+
+    //======== acccepting a user request=============
+    static approveUser = async (req, res) => {
 
         try {
             const { requestUserId } = req.params;
@@ -158,7 +209,7 @@ class TripController {
 
             if (isApproved) {
                 const notifyMsg = `${userName} approved your request`
-                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg,"approve_request");
+                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg, "approve_request");
 
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {
@@ -190,17 +241,17 @@ class TripController {
 
         try {
             const { tripId } = req.params;
-            const { requestUserId,userName } = req.body;
+            const { requestUserId, userName } = req.body;
 
             const isRejected = await TripModel.findByIdAndUpdate(tripId, {
                 $pull: {
-                    requestedUsers:  requestUserId
+                    requestedUsers: requestUserId
                 }
             })
 
             if (isRejected) {
                 const notifyMsg = `${userName} rejected your request `
-                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg,"general");
+                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg, "general");
 
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {

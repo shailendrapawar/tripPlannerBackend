@@ -9,6 +9,9 @@ const tripRouter=express.Router();
 tripRouter.post("/createTrip",authMiddleware,TripController.createTrip)
 tripRouter.post("/deleteTrip/:tripId",authMiddleware,TripController.deleteTrip)
 tripRouter.get("/getTrip/:tripId",authMiddleware,TripController.getTrip)
+tripRouter.get("/getUserHostedTrips",authMiddleware,TripController.getUserHostedTrips)
+tripRouter.get("/getAllTrips",authMiddleware,TripController.getAllTrips)
+
 
 tripRouter.post("/approveUser/:requestUserId",authMiddleware,TripController.approveUser)
 tripRouter.post("/rejectUser/:tripId",authMiddleware,TripController.rejectUser)
