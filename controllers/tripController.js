@@ -102,7 +102,7 @@ class TripController {
         if(trips){
             return res.status(200).json({
                 msg:" trips found",
-                data:trips
+                trips:trips
             })
         }
 
@@ -110,7 +110,7 @@ class TripController {
             console.log(err)
             return res.status(400).json({
                 msg:" errro in trip find",
-                data:[]
+                trips:[]
             })
         }
     }
