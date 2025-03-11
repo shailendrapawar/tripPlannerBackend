@@ -125,10 +125,30 @@ class AuthController {
         } catch (err) {
             return res.status(400).json({
                 msg: "user not found",
-                userData:[]
+                userData: []
             })
         }
 
+    }
+
+    static getUserNotifications = async (req, res) => {
+        try {
+            const userId = req.id;
+            const user = await UserModel.findById(userId);
+            // console.log(user.notifications)
+            if (user) {
+                return res.status(200).json({
+                    msg: "notifications found",
+                    notifications: user.notifications,
+                    success: true
+                })
+            }
+        } catch (err) {
+            return res.status(400).json({
+                msg: "notifications not found",
+                success: false
+            })
+        }
     }
 
 }

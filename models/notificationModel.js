@@ -20,17 +20,22 @@ const notificationSchema=new mongoose.Schema({
     type:{
         type:String,
         enum:["join_request","approve_request","general"]
+    },
+    relatedTo:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Trip"
     }
 })
 
 //=======just exportung schema==========
 export default notificationSchema;
 
-export const notificationFunction=(senderId,receiverId,message,type)=>{
+export const notificationFunction=(senderId,receiverId,message,type,relatedTo)=>{
     return {
         senderId:senderId,
         receiverId:receiverId,
         message:message,
-        type:type
+        type:type,
+        relatedTo:relatedTo
     }
 }

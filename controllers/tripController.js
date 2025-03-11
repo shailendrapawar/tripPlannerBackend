@@ -159,7 +159,7 @@ class TripController {
 
             if (isRequested) {
                 const notifyMsg = `${userName} requested for joining trip`
-                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg, "join_request");
+                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg, "join_request",isRequested._id);
                 // console.log(newNotification)
 
                 const isNotified = await UserModel.findByIdAndUpdate(isRequested.host, {
@@ -205,10 +205,10 @@ class TripController {
                 }
             }, { new: true, upsert: true })
 
-            if (isApproved) {
+            //=========sedning notiify to owner
+            if (isApproved) {                
                 const notifyMsg = `${userName} approved your request`
-                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg, "approve_request");
-
+                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg, "approve_request",isApproved._id);
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {
                         notifications: newNotification
@@ -249,7 +249,7 @@ class TripController {
 
             if (isRejected) {
                 const notifyMsg = `${userName} rejected your request `
-                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg, "general");
+                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg, "general",isRejected._id);
 
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {
@@ -275,16 +275,20 @@ class TripController {
         try {
             const { notificationId } = req.params;
             const userId = req.id;
-            console.log(userId)
-            console.log(notificationId)
-            const isDeleted = await UserModel.findByIdAndUpdate({ _id: userId }, {
-                $pull: { notifications: { _id: notificationId } }
+            // console.log(userId)
+            // console.log(notificationId)
+            const isDeleted = await UserModel.findByIdAndUpdate({ _id: userId, }, {
+                $pull: { notifications: { _id: notificationId } },
+                
+            },{
+                new:true,upsert:true
             });
-            console.log(isDeleted)
+            // console.log(isDeleted)
             if(isDeleted){
                 res.status(200).json({
                     msg:"notification deleted",
-                    success:true
+                    success:true,
+                    data:isDeleted
                 })
             }
         } catch (err) {
