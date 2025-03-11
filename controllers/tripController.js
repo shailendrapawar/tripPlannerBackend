@@ -7,7 +7,7 @@ class TripController {
     //========== create a new trip ===================
     static createTrip = async (req, res) => {
         try {
-            
+
             const { title, description, startDate, endDate, destination, budget, activities, category } = req.body
 
             const newTrip = new TripModel({
@@ -91,26 +91,26 @@ class TripController {
 
     //==========get all trips==========================
 
-    static getAllTrips=async(req,res)=>{
-        try{
-            const trips=await TripModel.find({}).populate(
+    static getAllTrips = async (req, res) => {
+        try {
+            const trips = await TripModel.find({}).populate(
                 {
-                    path:"host",
-                    select:"name _id avatar",
+                    path: "host",
+                    select: "name _id avatar",
                 }
             )
-        if(trips){
-            return res.status(200).json({
-                msg:" trips found",
-                trips:trips
-            })
-        }
+            if (trips) {
+                return res.status(200).json({
+                    msg: " trips found",
+                    trips: trips
+                })
+            }
 
-        }catch(err){
+        } catch (err) {
             console.log(err)
             return res.status(400).json({
-                msg:" errro in trip find",
-                trips:[]
+                msg: " errro in trip find",
+                trips: []
             })
         }
     }
@@ -123,20 +123,20 @@ class TripController {
             const hostId = req.id;
             const trips = await TripModel.find({ host: hostId });
             // console.log(trips)
-            if(trips){
-               return res.status(200).json({
-                    mgs:"user hosted trips found",
-                    success:true,
-                    trips:trips
+            if (trips) {
+                return res.status(200).json({
+                    mgs: "user hosted trips found",
+                    success: true,
+                    trips: trips
                 })
             }
 
         } catch (err) {
             console.log(err)
             return res.status(400).json({
-                mgs:"internal server error",
-                success:false,
-                trips:[]
+                mgs: "internal server error",
+                success: false,
+                trips: []
             })
         }
 
@@ -150,7 +150,7 @@ class TripController {
             const { tripId } = req.params
             const { userName } = req.params
             const userId = req.id
-            // console.log(tripId);
+            // console.log("calling");
             const isRequested = await TripModel.findByIdAndUpdate(tripId, {
                 $push: { requestedUsers: userId }
             },
@@ -158,10 +158,9 @@ class TripController {
             )
 
             if (isRequested) {
-
                 const notifyMsg = `${userName} requested for joining trip`
                 const newNotification = notificationFunction(userId, isRequested.host, notifyMsg, "join_request");
-                console.log(newNotification)
+                // console.log(newNotification)
 
                 const isNotified = await UserModel.findByIdAndUpdate(isRequested.host, {
                     $push: {
@@ -272,33 +271,56 @@ class TripController {
 
     }
 
-    static userRelatedTrips=async(req,res)=>{
-        
+    static deleteNotification = async (req, res) => {
+        try {
+            const { notificationId } = req.params;
+            const userId = req.id;
+            console.log(userId)
+            console.log(notificationId)
+            const isDeleted = await UserModel.findByIdAndUpdate({ _id: userId }, {
+                $pull: { notifications: { _id: notificationId } }
+            });
+            console.log(isDeleted)
+            if(isDeleted){
+                res.status(200).json({
+                    msg:"notification deleted",
+                    success:true
+                })
+            }
+        } catch (err) {
+            console.log(err)
+            res.status(200).json({
+                msg:"internal server error",
+                success:false
+            })
+        }
+    }
 
+    static userRelatedTrips = async (req, res) => {
         try {
             // const hostId = req.id;
-            const {userId}=req.params;
+            const { userId } = req.params;
             const trips = await TripModel.find({ host: userId }).populate(
                 {
-                    path:"host",
-                    select:"name _id avatar",
+                    path: "host",
+                    select: "name _id avatar",
                 }
             );
             // console.log(trips)
-            if(trips){
-               return res.status(200).json({
-                    mgs:"user hosted trips found",
-                    success:true,
-                    trips:trips
+            if (trips) {
+                return res.status(200).json({
+                    mgs: "user hosted trips found",
+                    success: true,
+                    trips: trips
                 })
             }
 
         } catch (err) {
             console.log(err)
             return res.status(400).json({
-                mgs:"internal server error",
-                success:false,
-                trips:[]
+                mgs: "internal server error",
+                success: false,
+                trips: []
             })
         }
 

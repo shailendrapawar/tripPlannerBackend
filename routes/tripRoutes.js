@@ -12,7 +12,7 @@ tripRouter.get("/getTrip/:tripId",authMiddleware,TripController.getTrip)
 tripRouter.get("/getUserHostedTrips",authMiddleware,TripController.getUserHostedTrips)
 tripRouter.get("/getAllTrips",authMiddleware,TripController.getAllTrips)
 
-
+tripRouter.post("/deleteNotification/:notificationId",authMiddleware,TripController.deleteNotification)
 tripRouter.post("/approveUser/:requestUserId",authMiddleware,TripController.approveUser)
 tripRouter.post("/rejectUser/:tripId",authMiddleware,TripController.rejectUser)
 
