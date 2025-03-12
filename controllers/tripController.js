@@ -238,13 +238,16 @@ class TripController {
     static rejectUser = async (req, res) => {
 
         try {
-            const { tripId } = req.params;
-            const { requestUserId, userName } = req.body;
+           
+            const { requestUserId } = req.params;
+            const { tripId, userName } = req.body;
 
             const isRejected = await TripModel.findByIdAndUpdate(tripId, {
                 $pull: {
                     requestedUsers: requestUserId
                 }
+            },{
+                new:true,upsert:true
             })
 
             if (isRejected) {
@@ -267,6 +270,10 @@ class TripController {
 
         } catch (err) {
             console.log(err)
+            return res.status(400).json({
+                msg: "some error in rejecting user request",
+                success: false
+            })
         }
 
     }

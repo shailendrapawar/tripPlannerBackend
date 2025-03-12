@@ -25,6 +25,8 @@ const notificationSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Trip"
     }
+},{
+    timestamps:true
 })
 
 //=======just exportung schema==========
