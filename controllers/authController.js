@@ -78,7 +78,8 @@ class AuthController {
             res.status(200).cookie("token", token, {
                 httpOnly: true,
                 sameSite: "none",
-                maxAge: 7 * 24 * 60 * 60 * 1000
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                secure:true
             }).json({
                 msg: "login successfull",
                 success: true,

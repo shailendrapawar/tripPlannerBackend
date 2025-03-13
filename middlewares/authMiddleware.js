@@ -4,7 +4,7 @@ configDotenv()
 
 const authMiddleware = async (req, res, next) => {
 
-    // console.log(req.cookies)
+    console.log(req.cookies)
     try {
         const { token } = req.cookies
         // console.log(token)
