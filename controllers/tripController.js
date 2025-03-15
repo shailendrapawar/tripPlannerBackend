@@ -121,7 +121,10 @@ class TripController {
 
         try {
             const hostId = req.id;
-            const trips = await TripModel.find({ host: hostId });
+            const trips = await TripModel.find({ host: hostId }).populate({
+                path:"approvedUser",
+                select:"name avatar email bio dob gender"
+            });
             // console.log(trips)
             if (trips) {
                 return res.status(200).json({
@@ -158,7 +161,7 @@ class TripController {
             )
 
             if (isRequested) {
-                const notifyMsg = `${userName} requested for joining trip`
+                const notifyMsg = `${userName} requested for joining trip to ${isRequested.destination.destination}`
                 const newNotification = notificationFunction(userId, isRequested.host, notifyMsg, "join_request",isRequested._id);
                 // console.log(newNotification)
 
