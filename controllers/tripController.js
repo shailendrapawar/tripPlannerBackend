@@ -69,7 +69,10 @@ class TripController {
             console.log(tripId)
             const isTrip = await TripModel.findById({ _id: tripId }).populate({
                 path: "host",
-                select: "name email gender"
+                select: "name email gender avatar"
+            }).populate({
+                path:"approvedUser",
+                select:" name gender avatar"
             })
 
             if (isTrip) {
