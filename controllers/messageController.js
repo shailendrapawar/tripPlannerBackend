@@ -49,8 +49,65 @@ class MessageController {
         }
 
     }
-    static getConversation = async (req, res) => {
+    static getSingleConversation = async (req, res) => {
+        try {
+            // const userId = req.id;
+            const { conversationId } = req.params;
+            const conversation = await ConversationModel.findById(conversationId).populate("messages");
 
+            if (!conversation) {
+                return res.status(400).json({
+                    msg: "conversation not found",
+                    success: false
+                })
+            }
+
+            return res.status(200).json({
+                msg: "Conversation found ",
+                success: true,
+                conversation: conversation || []
+            })
+        } catch (err) {
+            if (!conversation) {
+                return res.status(400).json({
+                    msg: "conversation not found",
+                    success: false
+                })
+            }
+        }
+
+    }
+
+    static getUserAllConversations = async (req, res) => {
+
+        try {
+            const userId = req.id;
+
+            const allConversations = await ConversationModel.find({
+                users: {
+                    $in: userId
+                }
+            })
+
+            if (!allConversations) {
+                return res.status(400).json({
+                    msg: "conversations not found",
+                    success: false
+                })
+            }
+
+            return res.status(200).json({
+                msg: "Conversation found ",
+                success: true,
+                allConversations
+            })
+
+        } catch (err) {
+            return res.status(400).json({
+                msg: "conversations not found",
+                success: false
+            })
+        }
     }
 }
 
