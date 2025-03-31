@@ -1,9 +1,9 @@
 import express from "express";
-import authMiddleware from "../middlewares/authMiddleware";
-import MessageController from "../controllers/messageController";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import MessageController from "../controllers/messageController.js";
 const messageRouter=express.Router();
 
-messageRouter.post("/sendMessage",authMiddleware,MessageController.sendMessage)
-messageRouter.get("/getConversation",authMiddleware,MessageController.getConversation);
+messageRouter.post("/sendMessage/:conversationId",authMiddleware,MessageController.sendMessage)
+messageRouter.get("/getSingleConversation/:conversationId",authMiddleware,MessageController.getConversation);
 
 export default messageRouter;

@@ -1,6 +1,7 @@
 import TripModel from "../models/tripModel.js"
 import { notificationFunction } from "../models/notificationModel.js"
 import UserModel from "../models/userModels.js"
+import ConversationModel from "../models/chatModels/ConversationModel.js"
 class TripController {
 
 
@@ -16,17 +17,31 @@ class TripController {
                 description,
                 duration: { start: startDate, end: endDate },
                 destination: destination,
+                approvedUser:[req.id],
                 budget,
                 activities,
                 category,
-
             })
+            
             const isCreated = await newTrip.save();
             if (isCreated) {
-                return res.status(201).json({
-                    msg: "Trip created",
-                    success: true
+
+                const newConversation = new ConversationModel({
+                    chatName: isCreated.title,
+                    users: [isCreated.host],
+                    groupAdmin: isCreated.host,
+                    tripId: isCreated._id
                 })
+
+                const isConversationCreated = await newConversation.save();
+
+                if (isConversationCreated) {
+                    return res.status(201).json({
+                        msg: "Trip created",
+                        success: true
+                    })
+                }
+
             }
         } catch (err) {
             console.log(err)
@@ -71,8 +86,8 @@ class TripController {
                 path: "host",
                 select: "name email gender avatar"
             }).populate({
-                path:"approvedUser",
-                select:" name gender avatar"
+                path: "approvedUser",
+                select: " name gender avatar"
             })
 
             if (isTrip) {
@@ -125,8 +140,8 @@ class TripController {
         try {
             const hostId = req.id;
             const trips = await TripModel.find({ host: hostId }).populate({
-                path:"approvedUser",
-                select:"name avatar email bio dob gender"
+                path: "approvedUser",
+                select: "name avatar email bio dob gender"
             });
             // console.log(trips)
             if (trips) {
@@ -165,7 +180,7 @@ class TripController {
 
             if (isRequested) {
                 const notifyMsg = `${userName} requested for joining trip to ${isRequested.destination.destination}`
-                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg, "join_request",isRequested._id);
+                const newNotification = notificationFunction(userId, isRequested.host, notifyMsg, "join_request", isRequested._id);
                 // console.log(newNotification)
 
                 const isNotified = await UserModel.findByIdAndUpdate(isRequested.host, {
@@ -212,9 +227,9 @@ class TripController {
             }, { new: true, upsert: true })
 
             //=========sedning notiify to owner
-            if (isApproved) {                
+            if (isApproved) {
                 const notifyMsg = `${userName} approved your request`
-                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg, "approve_request",isApproved._id);
+                const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg, "approve_request", isApproved._id);
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {
                         notifications: newNotification
@@ -244,7 +259,7 @@ class TripController {
     static rejectUser = async (req, res) => {
 
         try {
-           
+
             const { requestUserId } = req.params;
             const { tripId, userName } = req.body;
 
@@ -252,13 +267,13 @@ class TripController {
                 $pull: {
                     requestedUsers: requestUserId
                 }
-            },{
-                new:true,upsert:true
+            }, {
+                new: true, upsert: true
             })
 
             if (isRejected) {
                 const notifyMsg = `${userName} rejected your request `
-                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg, "general",isRejected._id);
+                const newNotification = notificationFunction(req.id, requestUserId, notifyMsg, "general", isRejected._id);
 
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {
@@ -292,23 +307,23 @@ class TripController {
             // console.log(notificationId)
             const isDeleted = await UserModel.findByIdAndUpdate({ _id: userId, }, {
                 $pull: { notifications: { _id: notificationId } },
-                
-            },{
-                new:true,upsert:true
+
+            }, {
+                new: true, upsert: true
             });
             // console.log(isDeleted)
-            if(isDeleted){
+            if (isDeleted) {
                 res.status(200).json({
-                    msg:"notification deleted",
-                    success:true,
-                    data:isDeleted
+                    msg: "notification deleted",
+                    success: true,
+                    data: isDeleted
                 })
             }
         } catch (err) {
             console.log(err)
             res.status(200).json({
-                msg:"internal server error",
-                success:false
+                msg: "internal server error",
+                success: false
             })
         }
     }
