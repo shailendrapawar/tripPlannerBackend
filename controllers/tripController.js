@@ -226,15 +226,23 @@ class TripController {
                 }
             }, { new: true, upsert: true })
 
-            //=========sedning notiify to owner
+            //=========sending notiify to owner
             if (isApproved) {
-                const notifyMsg = `${userName} approved your request`
+
+                const isAddedToGroup=await ConversationModel.findOneAndUpdate({tripId:tripId},{
+                    $push:{users:requestUserId}
+                })
+
+
+                const notifyMsg = `${userName} approved your request, check your DM for more`
                 const newNotification = notificationFunction(isApproved.host, requestUserId, notifyMsg, "approve_request", isApproved._id);
                 const isNotified = await UserModel.findByIdAndUpdate(requestUserId, {
                     $push: {
                         notifications: newNotification
                     }
                 })
+
+
 
                 if (isNotified) {
                     res.status(200).json({

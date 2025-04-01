@@ -6,7 +6,7 @@ class MessageController {
         try {
             const userId = req.id;
             const { conversationId } = req.params;
-            const { message } = req.body;
+            const { message,senderName } = req.body;
 
             const conversation = await ConversationModel.findById(conversationId);
 
@@ -19,16 +19,19 @@ class MessageController {
 
             const newMessage = new MessageModel({
                 senderId: userId,
-                message: message
+                message: message,
+                senderName
             })
 
-            const isMsgCreated = await newMessage.save();
+            const isMsgCreated = await newMessage.save()
 
             if (!isMsgCreated) {
+                console.log(isMsgCreated)
 
                 return res.status(400).json({
                     msg: "message not created",
-                    success: false
+                    success: false,
+                    
                 })
             }
 
@@ -37,7 +40,9 @@ class MessageController {
 
             return res.status(200).json({
                 msg: "message sent successfully",
-                success: true
+                success: true,
+                // newMessage: {...isMsgCreated,name:senderName}
+                newMessage
             })
 
         } catch (err) {
@@ -53,7 +58,13 @@ class MessageController {
         try {
             // const userId = req.id;
             const { conversationId } = req.params;
-            const conversation = await ConversationModel.findById(conversationId).populate("messages");
+            const conversation = await ConversationModel.findById(conversationId).populate({
+                path:"messages",
+                // populate:{
+                //     path:"senderId",
+                //     select:"name avatar"
+                // }
+            });
 
             if (!conversation) {
                 return res.status(400).json({
@@ -65,7 +76,7 @@ class MessageController {
             return res.status(200).json({
                 msg: "Conversation found ",
                 success: true,
-                conversation: conversation || []
+                conversation: conversation.messages || []
             })
         } catch (err) {
             if (!conversation) {
