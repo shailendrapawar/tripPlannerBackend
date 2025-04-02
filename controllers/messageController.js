@@ -1,5 +1,7 @@
 import ConversationModel from "../models/chatModels/ConversationModel.js";
 import MessageModel from "../models/chatModels/MesssageModel.js"
+import { io } from "../socket/socket.js";
+
 class MessageController {
 
     static sendMessage = async (req, res) => {
@@ -37,7 +39,12 @@ class MessageController {
 
             conversation.messages.push(isMsgCreated);
             await conversation.save()
+            
+            
+            //====socket event to handle message===========
+            io.to(conversationId).emit("getMsg",isMsgCreated);
 
+            // console.log("msg emmitted==")
             return res.status(200).json({
                 msg: "message sent successfully",
                 success: true,
@@ -54,6 +61,7 @@ class MessageController {
         }
 
     }
+
     static getSingleConversation = async (req, res) => {
         try {
             // const userId = req.id;
