@@ -2,11 +2,16 @@ import express from "express"
 import TripController from "../controllers/tripController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 
+import upload from "../middlewares/uploadImage.js";
+
+
+
+
 
 const tripRouter=express.Router();
 
 // =======trip owner actions========================
-tripRouter.post("/createTrip",authMiddleware,TripController.createTrip)
+tripRouter.post("/createTrip",authMiddleware,upload.single("tripImg"),TripController.createTrip)
 tripRouter.post("/deleteTrip/:tripId",authMiddleware,TripController.deleteTrip)
 tripRouter.get("/getTrip/:tripId",authMiddleware,TripController.getTrip)
 tripRouter.get("/getUserHostedTrips",authMiddleware,TripController.getUserHostedTrips)

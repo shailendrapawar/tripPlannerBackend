@@ -13,6 +13,10 @@ const tripSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    tripImg:{
+        url:String,
+        publicId:String
+    },
     category:{
         type:String
     },

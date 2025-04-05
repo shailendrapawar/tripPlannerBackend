@@ -36,10 +36,8 @@ class MessageController {
                     
                 })
             }
-
             conversation.messages.push(isMsgCreated);
             await conversation.save()
-            
             
             //====socket event to handle message===========
             io.to(conversationId).emit("getMsg",isMsgCreated);
