@@ -9,51 +9,55 @@ class TripController {
 
     //========== create a new trip ===================
     static createTrip = async (req, res) => {
-        // try {
 
-            // const { title, description, startDate, endDate, destination, budget, activities, category } = req.body
-            // console.log(req.file)
-            const uploadedImg=await uploadToCloudinary(req.file.path)
-            console.log(uploadedImg)
-        //     const newTrip = new TripModel({
-        //         host: req.id,
-        //         title,
-        //         description,
-        //         duration: { start: startDate, end: endDate },
-        //         destination: destination,
-        //         approvedUser:[req.id],
-        //         budget,
-        //         activities,
-        //         category,
-        //     })
+        try {
+
+            const { title, description, startDate, endDate, destination, budget, activities, category } = req.body
+            const {url,publicId}=await uploadToCloudinary(req.file.path)
+            // console.log(req.body)
+            // console.log(req.body.activities)
             
-        //     const isCreated = await newTrip.save();
-        //     if (isCreated) {
+            const newTrip = new TripModel({
+                host: req.id,
+                title,
+                description,
+                tripImg:{url,publicId},
+                duration: { start: startDate, end: endDate },
+                destination: JSON.parse(destination),
+                approvedUser:[req.id],
+                budget,
+                activities:JSON.parse(activities),
+                category,
+            })
+            
+            const isCreated = await newTrip.save();
 
-        //         const newConversation = new ConversationModel({
-        //             chatName: isCreated.title,
-        //             users: [isCreated.host],
-        //             groupAdmin: isCreated.host,
-        //             tripId: isCreated._id
-        //         })
+            if (isCreated) {
+                const newConversation = new ConversationModel({
+                    chatName: isCreated.title,
+                    users: [isCreated.host],
+                    groupAdmin: isCreated.host,
+                    tripId: isCreated._id,
+                    tripImg:isCreated.tripImg.url
+                })
 
-        //         const isConversationCreated = await newConversation.save();
+                const isConversationCreated = await newConversation.save();
 
-        //         if (isConversationCreated) {
-        //             return res.status(201).json({
-        //                 msg: "Trip created",
-        //                 success: true
-        //             })
-        //         }
+                if (isConversationCreated) {
+                    return res.status(201).json({
+                        msg: "Trip created",
+                        success: true
+                    })
+                }
 
-        //     }
-        // } catch (err) {
-        //     console.log(err)
-        //     return res.status(400).json({
-        //         msg: "Trip not created",
-        //         success: false
-        //     })
-        // }
+            }
+        } catch (err) {
+            console.log(err)
+            return res.status(400).json({
+                msg: "Trip not created",
+                success: false
+            })
+        }
     }
 
 

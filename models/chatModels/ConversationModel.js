@@ -17,6 +17,9 @@ const conversationSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
+    tripImg:{
+        type:String
+    },
     tripId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Trip"

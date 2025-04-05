@@ -1,5 +1,6 @@
 import {v2 as cloudinary}  from "cloudinary";
 import { configDotenv } from "dotenv";
+import fs from "fs"
 configDotenv();
 
 cloudinary.config({
@@ -14,6 +15,9 @@ const uploadToCloudinary=async(filepath)=>{
         folder:"packpals"
     });
     // console.log(res)
+    if(res){
+        await fs.unlinkSync(filepath);
+    }
     return {url:res.secure_url,publicId:res.public_id}
 }
 
